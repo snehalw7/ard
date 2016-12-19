@@ -1,16 +1,15 @@
 
 <?php
-	require_once('connect.inc.php');
-	session_start();
+		require("config.php");
 		if(isset($_POST['Submit']))
 		{
 			$username=$_POST['UserName'];
 			if(!empty($username))
 			{
-					$query = mysqli_query($connect,"SELECT UserName,Question FROM `user` where UserName = '$username';");
+					$query = mysqli_query($conn,"SELECT UserName,Question FROM `user` where UserName = '$username';");
 					if(mysqli_num_rows($query)===1) 
 					{	
-						$row = mysqli_fetch_array($query) or die(mysqli_error($connect));
+						$row = mysqli_fetch_array($query) or die(mysqli_error($conn));
 						if(!empty($row['UserName']))
 						{
 							$_SESSION['UserName'] = $row['UserName'];
@@ -21,12 +20,12 @@
 					}
 					else
 					{
-						echo "<div class='alert alert-success'>Invalid Username</div>";
+						echo "<div class='alert alert-danger'>Invalid Username</div>";
 					}
 			}
 			else 
 			{
-				echo '<br>Enter Username<br>';
+				echo "<div class='alert alert-warning'>Enter Username</div>";
 			}
 			
 		}

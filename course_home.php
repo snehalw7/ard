@@ -1,11 +1,6 @@
 <?php
-    require_once('connect.inc.php');
+    require("config.php");
     ob_start();
-    session_start();
-        if(!isset($_SESSION['UserName']) )
-        {
-            header("Location:index.php");
-        }
 ?>
 <!DOCTYPE html>
 <html>
@@ -140,7 +135,6 @@
         $year = ($_POST["year"]);
         if(!empty($sid) && empty($sname) && empty($sem) && empty($year)){
             $sid = test_input($sid);
-            include 'connect.php';
             if(!ctype_digit(substr($sid,0,4)) || !ctype_digit(substr($sid,8,3)) || !ctype_alpha(substr($sid,11))){
                 phpAlert("Please check the student ID.");
             }
@@ -244,13 +238,6 @@ function test_input($data){
     $data = stripslashes($data);
     $data = htmlspecialchars($data);
     return $data;
-}
-
-function redirect($url) {
-    
-    header('Location: '.$url);
-    ob_end_flush();
-    die();
 }
 
 function phpAlert($msg) {

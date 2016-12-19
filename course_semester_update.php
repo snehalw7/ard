@@ -1,11 +1,6 @@
 <?php
-    require_once('connect.inc.php');
+    require("config.php");
     ob_start();
-    session_start();
-        if(!isset($_SESSION['UserName']) )
-        {
-            header("Location:index.php");
-        }
 ?>
 <!DOCTYPE html>
 <html>
@@ -17,8 +12,6 @@
     </head>
 <body>
 <?php 
-    
-    include 'connect.php';
     $semester = $_GET['course_semester'];
     $sem = explode("_",$semester);
     $sem = $sem[0]." ".$sem[1];
@@ -143,12 +136,6 @@ while(mysqli_num_rows($exec_query)>0 && $row = mysqli_fetch_assoc($exec_query)){
 
      <?php 
 	}}
-function redirect($url) {
-    header('Location: '.$url);
-    ob_end_flush();
-    die();
-}
-
  ?>
 </tbody>
 </table>

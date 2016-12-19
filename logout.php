@@ -1,9 +1,5 @@
 <?php
-	session_start();
-		if(!isset($_SESSION['UserName']) )
-		{
-			header("Location:index.php");
-		}
+	require("config.php");
 	session_destroy();
 	header("Location:index.php");
 ?>

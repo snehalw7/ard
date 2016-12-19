@@ -29,24 +29,10 @@
             </div><!-- /.navbar-collapse -->
         </div>
 </nav>
-
-
-
-
 <?php
-	require_once('connect.inc.php');
-	session_start();
-		if(!isset($_SESSION['UserName']) )
-		{
-			header("Location:index.php");
-		}
-?>
-<?php
-
+	require("config.php");
 	if(isset($_POST['Search']))
 	{
-
-			
 			$term=$_POST['Term'];
 			$attribute=$_POST['Attribute'];
 			
@@ -237,7 +223,7 @@
 	if(isset($_POST['Search']))
 	{
 			$query=$_SESSION['Query'];
-			$exec_query = mysqli_query($connect, $query);
+			$exec_query = mysqli_query($conn, $query);
 			  if($exec_query)
 			{
 				$num_fields = mysqli_num_fields($exec_query);

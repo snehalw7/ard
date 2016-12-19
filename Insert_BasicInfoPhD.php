@@ -1,13 +1,5 @@
 <?php
-  require_once('connect.inc.php');
-  session_start();
-    if(!isset($_SESSION['UserName']) )
-    {
-      header("Location:index.php");
-    }
-?>
-<?php
-include_once('connect.php');
+require("config.php");
 if(isset($_POST['next']))
 {
   if(!ctype_digit(substr($_POST['id'],0,4)) || !ctype_digit(substr($_POST['id'],8,3)) || !ctype_alpha(substr($_POST['id'],11)))

@@ -1,19 +1,14 @@
 <?php
-	session_start();
-		if(!isset($_SESSION['UserName']) )
-		{
-			header("Location:index.php");
-		}
-		if(!($_SESSION["Privilege"]==="Admin"))
-		{
-			header("Location:home.php");
-		}
-?>
+	require("config.php");
 
-<?php
+	if(!($_SESSION["Privilege"]==="Admin"))
+		{
+			redirect("home.php");
+		}
+
 	if(isset($_POST['Submit']))
 	{
-		require_once('connect.inc.php');
+		
 		
 		if(isset($_POST['UserName'])&&isset($_POST['Password'])&&isset($_POST['Password2'])&&isset($_POST['Question'])&&isset($_POST['Answer'])&&isset($_POST['Privilege']))
 		{
@@ -27,14 +22,14 @@
 			{
 					if(!empty($username)&&!empty($password)&&!empty($question)&&!empty($answer)&&!empty($privilege))
 					{
-						if (mysqli_query($connect,"INSERT INTO user (UserName,Password,Question,Answer,Privilege) VALUES ('$username','$password','$question','$answer','$privilege')") === TRUE) 
+						if (mysqli_query($conn,"INSERT INTO user (UserName,Password,Question,Answer,Privilege) VALUES ('$username','$password','$question','$answer','$privilege')") === TRUE) 
 						{
-							echo "<div class='alert alert-success'>New record created successfully</div>";
+							echo "<div class='alert alert-success'>New User added successfully</div>";
 						} 
 						else 
 						{
 							//echo "Error: " . "<br>" . $connect->error;
-							echo "<div class='alert alert-success'>UserName already exists</div>";
+							echo "<div class='alert alert-danger'>UserName already exists</div>";
 						}
 					}
 			}

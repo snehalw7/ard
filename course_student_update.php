@@ -1,12 +1,7 @@
 
 <?php
-    require_once('connect.inc.php');
+    require("config.php");
     session_start();
-    ob_start();
-        if(!isset($_SESSION['UserName']) )
-        {
-            header("Location:index.php");
-        }
 ?>
 <!DOCTYPE html>
 <html>
@@ -39,8 +34,6 @@
         </div>
 </nav>
 <?php 
-     
-    include 'connect.php';
     $sid = $_GET['course_student_id'];
 ?>
 <div class="container" style="overflow-y:scroll; height:500px;">
@@ -126,12 +119,6 @@ while(mysqli_num_rows($exec_query)>0 && $row = mysqli_fetch_assoc($exec_query)){
         </td>
         </tr>
 <?php }}
-function redirect($url) {
-    header('Location: '.$url);
-    ob_end_flush();
-    die();
-}
-
  ?>
 <script type="text/javascript">
             function submitForm(name){

@@ -1,19 +1,7 @@
-
 <?php
-	require_once('connect.inc.php');
-	session_start();
-		if(!isset($_SESSION['UserName']) )
-		{
-			header("Location:index.php");
-		}
-?>
-
-<?php
-
+		require("config.php");
 		if(isset($_POST['Submit']))
 		{
-			require_once('connect.inc.php');
-		
 			if(isset($_POST['OldPassword'])&&isset($_POST['NewPassword'])&&isset($_POST['NewPassword2']))
 			{
 			$username=$_SESSION['UserName'];
@@ -24,15 +12,15 @@
 			{
 					if(!empty($username)&&!empty($password)&&!empty($newpassword))
 					{
-						if(mysqli_num_rows(mysqli_query($connect,"SELECT * FROM `user` WHERE `UserName`= '$username' AND  `Password`='$password';"))===1) 
+						if(mysqli_num_rows(mysqli_query($conn,"SELECT * FROM `user` WHERE `UserName`= '$username' AND  `Password`='$password';"))===1) 
 						{	
-							if(mysqli_query($connect,"UPDATE user SET Password = '$newpassword' WHERE `user`.`UserName` = '$username';") === TRUE) 
+							if(mysqli_query($conn,"UPDATE user SET Password = '$newpassword' WHERE `user`.`UserName` = '$username';") === TRUE) 
 							{
 								echo "<div class='alert alert-success'>Password Changed!</div>";
 							} 
 							else 
 							{
-								echo "Error: " . "<br>" . $connect->error;
+								echo "Error: " . "<br>" . $conn->error;
 							}
 						}
 						else
@@ -95,7 +83,7 @@
 				<label for="NewPassword2">Re-enter New Password : </label>
 				<input type="password" name="NewPassword2" id="NewPassword2">
 			</p>
-			<input type="submit" name="Submit" value="Update Password">
+			<input class="btn btn-primary" type="submit" name="Submit" value="Update Password">
 			</form>
 		</div>
 	</body>

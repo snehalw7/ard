@@ -1,5 +1,5 @@
 <?php 
-				include 'connect.php';
+                require("config.php");
                 if($_SERVER["REQUEST_METHOD"]=="POST"&& isset($_POST["update_grade"])){
                 	$cid = $_GET['cid'];
                 	echo $cid;
@@ -17,9 +17,4 @@
 						    redirect("course_semester_update.php?course_semester=".$semester);
                     }
                 }
-function redirect($url) {
-    header('Location: '.$url);
-    ob_end_flush();
-    die();
-}
              ?>

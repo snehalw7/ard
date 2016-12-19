@@ -1,13 +1,5 @@
 <?php
-  require_once('connect.inc.php');
-  session_start();
-    if(!isset($_SESSION['UserName']) )
-    {
-      header("Location:index.php");
-    }
-?>
-<?php
-include_once('connect.php');
+require("config.php");
 if(isset($_POST['update']))
 {
 	$sql= mysqli_query($conn,"UPDATE `phd_fellowship` SET `awardee_ref`='".sanitize_input($_POST['number'])."',`type`='".sanitize_input($_POST['fellow_type'])."',`start_date`='".sanitize_input($_POST['startDate'])."',`end_date`='".sanitize_input($_POST['endDate'])."' WHERE `ID`='".sanitize_input($_GET['id'])."'") or die("Error try again");

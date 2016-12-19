@@ -1,13 +1,5 @@
 <?php
-  require_once('connect.inc.php');
-  session_start();
-    if(!isset($_SESSION['UserName']) )
-    {
-      header("Location:index.php");
-    }
-?>
-<?php
-include_once('connect.php');
+require("config.php");
 if(isset($_POST['update']))
 {
   echo "UPDATE `phd_thesis` SET `qualifying_date`='".sanitize_input($_POST['date'])."',`topic_approval_status`='".sanitize_input($_POST['status'])."',`research_area`='".sanitize_input($_POST['area'])."',`initial_thesis_title`='".sanitize_input($_POST['title'])."',`draft_submission_date`='".sanitize_input($_POST['draftDate'])."',`pre_submission_date`='".sanitize_input($_POST['preDate'])."',`final_thesis_title`='".sanitize_input($_POST['finalTitle'])."',`final_submission_date`='".sanitize_input($_POST['finalDate'])."',`viva_date`='".sanitize_input($_POST['vivaDate'])."',`phd_awarded_date`='".sanitize_input($_POST['awarddate'])."',`examiner1`='".sanitize_input($_POST['examiner1'])."',`examiner2`='".sanitize_input($_POST['examiner2']).", `supervisor`='".sanitize_input($_POST['Supervisor'])."', `dac1`='".sanitize_input($_POST['dac1'])."', `dac2`='".sanitize_input($_POST['dac2'])."' WHERE `ID`='".sanitize_input($_GET['id'])."';";

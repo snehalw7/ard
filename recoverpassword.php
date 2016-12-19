@@ -1,11 +1,10 @@
 
 
 <?php
-session_start();
+		require("config.php");
 		if(isset($_POST['Submit']))
 		{
-			require_once('connect.inc.php');
-		
+			
 			if(isset($_POST['Answer'])&&isset($_POST['NewPassword'])&&isset($_POST['NewPassword2']))
 			{
 			$username=$_SESSION['UserName'];
@@ -14,12 +13,12 @@ session_start();
 			$newpassword2=$_POST['NewPassword2'];
 			if(!empty($answer)&&!empty($newpassword))
 			{
-				if(mysqli_num_rows(mysqli_query($connect,"SELECT * FROM `user` WHERE `UserName`= '$username' AND  `Answer`='$answer';"))===1) 
+				if(mysqli_num_rows(mysqli_query($conn,"SELECT * FROM `user` WHERE `UserName`= '$username' AND  `Answer`='$answer';"))===1) 
 				{	
 
 					if($newpassword===$newpassword2)
 					{
-						if(mysqli_query($connect,"UPDATE user SET Password = '$newpassword' WHERE `user`.`UserName` = '$username';") === TRUE) 
+						if(mysqli_query($conn,"UPDATE user SET Password = '$newpassword' WHERE `user`.`UserName` = '$username';") === TRUE) 
 						{
 							echo "<div class='alert alert-success'>Password Updated!</div>";
 						} 

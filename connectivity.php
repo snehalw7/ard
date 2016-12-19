@@ -1,8 +1,7 @@
 <?php 
-	require_once('connect.inc.php');  
+	require("config.php");
 	function SignIn(mysqli $connect) 
 	{ 
-		session_start();
 		if(!empty($_POST['user']) OR !empty($_POST['pass'])) 
 		{ 
 			$query = mysqli_query($connect,"SELECT * FROM user where UserName = '$_POST[user]' AND Password = '$_POST[pass]'") or die(mysqli_error($connect)); 
@@ -18,18 +17,18 @@
 			}
 			else 
 			{  
-				$msg = "Invalid Username and Password Combination";
+				echo '<div class="alert alert-danger">Invalid Username and Password Combination</div>';
 				include('index.php');
 			} 
 		}
 		else 
 		{  
-			$msg = "ENTER USERNAME AND PASSWORD";
+			echo '<div class="alert alert-warning">ENTER USERNAME AND PASSWORD</div>';
 			include('index.php');
 		} 
 	} 
 	if(isset($_POST['submit'])) 
 	{ 
-		SignIn($connect); 
+		SignIn($conn); 
 	} 
 ?>

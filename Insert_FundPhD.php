@@ -1,13 +1,5 @@
 <?php
-  require_once('connect.inc.php');
-  session_start();
-    if(!isset($_SESSION['UserName']) )
-    {
-      header("Location:index.php");
-    }
-?>
-<?php
-include_once('connect.php');
+require("config.php");
 if(isset($_POST['next']))
 {
 	$sql= mysqli_query($conn,"INSERT INTO `phd_funds`(`ID`, `financial_year`, `funds_total`, `funds_fellowship`, `funds_contingency`, `funds_others`, `expenditure`, `balance`, `date_received`) VALUES ('".sanitize_input($_GET['id'])."', '".sanitize_input($_POST['year'])."', '".sanitize_input($_POST['funds_total'])."', '".sanitize_input($_POST['fell_funds'])."', '".sanitize_input($_POST['cont_funds'])."', '".sanitize_input($_POST['other_funds'])."', '".sanitize_input($_POST['expenditure'])."', '".sanitize_input($_POST['balance'])."', '".sanitize_input($_POST['date'])."')") or die("Error try again");

@@ -1,10 +1,5 @@
 <?php
-	require_once('connect.inc.php');
-	session_start();
-		if(!isset($_SESSION['UserName']) )
-		{
-			header("Location:index.php");
-		}
+	require("config.php");
 ?>
 <!DOCTYPE html>
 <html>
@@ -41,7 +36,6 @@
         </div>
 </nav>
 <?php 
-include 'connect.php';
 
 $base_query = "SELECT phd_scholar"."."."ID as ID, name, dept, supervisor, examiner1, examiner2, DAC1, DAC2 from phd_scholar, phd_thesis where phd_scholar"."."."ID=phd_thesis.ID order by YOA, phd_scholar.ID;";
 $exec_query = mysqli_query($conn,$base_query);

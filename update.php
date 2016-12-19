@@ -1,23 +1,17 @@
 <?php
-	require_once('connect.inc.php');
-	session_start();
-		if(!isset($_SESSION['UserName']) )
-		{
-			header("Location:index.php");
-		}
+		require("config.php");
 		if(($_SESSION["Privilege"]==="Read Only"))
 		{
-			header("Location:home.php");
+			redirect("home.php");
 		}
 ?>
-
 <?php
 	if(isset($_POST['Update']))
 	{
 		if(!empty($_POST['Sid']))
 		{
 			$sid=$_POST['Sid'];		
-			if ($result=mysqli_query($connect,"SELECT * FROM student WHERE StudentID='$sid'")) 
+			if ($result=mysqli_query($conn,"SELECT * FROM student WHERE StudentID='$sid'")) 
 			{
 				$num_rows = mysqli_num_rows($result);
 				if($num_rows>0)
@@ -34,7 +28,7 @@
 			} 
 			else 
 			{
-				echo "Error: " . "<br>" . $connect->error;
+				echo "Error: " . "<br>" . $conn->error;
 			}	
 		}
 	}			

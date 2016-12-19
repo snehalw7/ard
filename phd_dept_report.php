@@ -1,10 +1,5 @@
 <?php
-	require_once('connect.inc.php');
-	session_start();
-		if(!isset($_SESSION['UserName']) )
-		{
-			header("Location:index.php");
-		}
+	require("config.php");	
 ?>
 
 <!DOCTYPE html>
@@ -42,7 +37,6 @@
         </div>
 </nav>
 <?php 
-include 'connect.php';
 $dept_query = "SELECT distinct dept from phd_scholar;";
 $exec_query = mysqli_query($conn,$dept_query);
 ?>

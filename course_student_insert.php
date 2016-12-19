@@ -248,12 +248,6 @@ function test_input($data){
     return $data;
 }
 
-function redirect($url) {
-    header('Refresh:2; '.$url);
-    ob_end_flush();
-    die();
-}
-
 function phpAlert($msg) {
     echo '<script type="text/javascript">alert("' . $msg . '"); </script>';
 }

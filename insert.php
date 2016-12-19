@@ -32,12 +32,7 @@
 
 
 <?php
-	require_once('connect.inc.php');
-	session_start();
-		if(!isset($_SESSION['UserName']) )
-		{
-			header("Location:index.php");
-		}
+		require("config.php");
 		if(($_SESSION["Privilege"]==="Read Only"))
 		{
 			header("Location:home.php");
@@ -85,7 +80,7 @@
 			$institute4=$_POST['Institute4'];
 			$location4=$_POST['Institute4'];
 
-			if ((mysqli_query($connect,"INSERT INTO student (`StudentID`, `Name`, `Gender`, `Department`, `Email`, `Mobile`) VALUES ('$sid','$name','$gender','$department','$email','$mobile')") && mysqli_query($connect,"INSERT INTO `thesis` (`StudentID`, `Thesis_Title`, `Year`, `Semester`, `On_Off_Campus`, `Thesis_Location`, `Mid_Sem_Grade`, `End_Sem_Grade`, `Thesis_State`, `Type`, `Supervisor`, `Institute`, `Location`, `Department_of_Thesis`, `Area_of_Thesis`, `Examiner1`, `Examiner2`,`CoSupervisor1`,`CoSupervisor1_Institute`,`CoSupervisor1_Location`,`CoSupervisor2`,`CoSupervisor2_Institute`,`CoSupervisor2_Location`) VALUES ('$sid', '$title', '$year', '$semester', '$onoff', '$location', '$mid', '$end', '$state', '$type', '$supervisor', '$institute2', '$location2', '$department2', '$area', '$examiner1', '$examiner2', '$cosupervisor1', '$institute3', '$location3', '$cosupervisor2', '$institute4', '$location4')"))=== TRUE) 
+			if ((mysqli_query($conn,"INSERT INTO student (`StudentID`, `Name`, `Gender`, `Department`, `Email`, `Mobile`) VALUES ('$sid','$name','$gender','$department','$email','$mobile')") && mysqli_query($conn,"INSERT INTO `thesis` (`StudentID`, `Thesis_Title`, `Year`, `Semester`, `On_Off_Campus`, `Thesis_Location`, `Mid_Sem_Grade`, `End_Sem_Grade`, `Thesis_State`, `Type`, `Supervisor`, `Institute`, `Location`, `Department_of_Thesis`, `Area_of_Thesis`, `Examiner1`, `Examiner2`,`CoSupervisor1`,`CoSupervisor1_Institute`,`CoSupervisor1_Location`,`CoSupervisor2`,`CoSupervisor2_Institute`,`CoSupervisor2_Location`) VALUES ('$sid', '$title', '$year', '$semester', '$onoff', '$location', '$mid', '$end', '$state', '$type', '$supervisor', '$institute2', '$location2', '$department2', '$area', '$examiner1', '$examiner2', '$cosupervisor1', '$institute3', '$location3', '$cosupervisor2', '$institute4', '$location4')"))=== TRUE) 
 			{
 				echo "<div class='alert alert-success'>Student Entry created successfully</div>";
 			} 

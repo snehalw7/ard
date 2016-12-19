@@ -23,7 +23,7 @@
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav navbar-right">
 					<?php
-					session_start();
+					require("config.php");
 				if($_SESSION["Privilege"]=="Admin")
 				{
 				?>
@@ -39,16 +39,7 @@
             </div><!-- /.navbar-collapse -->
         </div>
     </nav>
-<?php 
-		
 
-		if(!isset($_SESSION['UserName']))
-		{
-			header("Location:index.php");
-		}
-		else
-		{
-			?>
 			<div class="container">
 			<div class="col-md-6">
 				<legend>FDT/HDD</legend>
@@ -72,10 +63,6 @@
 				</form>
 				
 				</div>
-			
-			<?php
-				}
-			?>
 			<div class="col-md-6">
 			<legend>PhD</legend>
 				<?php
@@ -113,10 +100,4 @@
 			</div>
 		</div>
 	</body> 
-	<?php
-	function redirect($url) {
-    header('Location: '.$url);
-    ob_end_flush();
-    die();
-}?>
 </html>

@@ -1,13 +1,8 @@
 <?php
-	require_once('connect.inc.php');
-	session_start();
-		if(!isset($_SESSION['UserName']) )
-		{
-			header("Location:index.php");
-		}
+		require("config.php");
 		if(($_SESSION["Privilege"]==="Read Only"))
 		{
-			header("Location:home.php");
+			redirect("home.php");
 		}
 ?>
 
@@ -52,7 +47,7 @@
 			$sid=$_SESSION['SId'];
 
 			$getinfo = "select * from student where StudentID='$sid'";
-			$query = mysqli_query($connect,$getinfo);
+			$query = mysqli_query($conn,$getinfo);
 
 			$row = mysqli_fetch_array($query);
 			
@@ -63,7 +58,7 @@
 			$mobile=$row['Mobile'];
 
 			$getinfo2 = "select * from thesis where StudentID='$sid'";
-			$query2 = mysqli_query($connect,$getinfo2);
+			$query2 = mysqli_query($conn,$getinfo2);
 
 			$row2 = mysqli_fetch_array($query2);
 			
@@ -132,7 +127,7 @@
 			$institute4=$_POST['Institute4'];
 			$location4=$_POST['Institute4'];
 
-			if ((mysqli_query($connect,"UPDATE `student` SET `Name` = '$name', `Gender` = '$gender', `Department` = '$department', `Email` = '$email', `Mobile` = '$mobile' WHERE `student`.`StudentID` = '$sid'") && mysqli_query($connect,"UPDATE `thesis` SET `Thesis_Title` = '$title', `Year` = '$year', `Semester` = '$semester', `On_Off_Campus` = '$onoff', `Thesis_Location` = '$location', `Mid_Sem_Grade` = '$mid', `End_Sem_Grade` = '$end', `Thesis_State` = '$state', `Type` = '$type', `Supervisor` = '$supervisor', `Institute` = '$institute2', `Location` = '$location2', `Department_of_Thesis` = '$department2', `Area_of_Thesis` = '$area', `Examiner1` = '$examiner1', `Examiner2` = '$examiner2', `CoSupervisor1` = '$cosupervisor1', `CoSupervisor1_Institute` = '$institute3', `CoSupervisor1_Location` = '$location3', `CoSupervisor2` = '$cosupervisor2', `CoSupervisor2_Institute` = '$institute4', `CoSupervisor2_Location` = '$location4' WHERE `thesis`.`StudentID` = '$sid'"))=== TRUE) 
+			if ((mysqli_query($conn,"UPDATE `student` SET `Name` = '$name', `Gender` = '$gender', `Department` = '$department', `Email` = '$email', `Mobile` = '$mobile' WHERE `student`.`StudentID` = '$sid'") && mysqli_query($conn,"UPDATE `thesis` SET `Thesis_Title` = '$title', `Year` = '$year', `Semester` = '$semester', `On_Off_Campus` = '$onoff', `Thesis_Location` = '$location', `Mid_Sem_Grade` = '$mid', `End_Sem_Grade` = '$end', `Thesis_State` = '$state', `Type` = '$type', `Supervisor` = '$supervisor', `Institute` = '$institute2', `Location` = '$location2', `Department_of_Thesis` = '$department2', `Area_of_Thesis` = '$area', `Examiner1` = '$examiner1', `Examiner2` = '$examiner2', `CoSupervisor1` = '$cosupervisor1', `CoSupervisor1_Institute` = '$institute3', `CoSupervisor1_Location` = '$location3', `CoSupervisor2` = '$cosupervisor2', `CoSupervisor2_Institute` = '$institute4', `CoSupervisor2_Location` = '$location4' WHERE `thesis`.`StudentID` = '$sid'"))=== TRUE) 
 			{
 				echo "<div class='alert alert-success'>Student Entry updated</div>";
 			} 

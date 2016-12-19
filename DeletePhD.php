@@ -1,13 +1,8 @@
 <?php
-  require_once('connect.inc.php');
+  require("config.php");
   session_start();
-    if(!isset($_SESSION['UserName']) )
-    {
-      header("Location:index.php");
-    }
 ?>
 <?php
-include_once('connect.php');
 if(isset($_POST['delete']))
 {
 	if(!empty($_POST['name']))

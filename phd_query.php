@@ -1,10 +1,5 @@
 <?php
-  require_once('connect.inc.php');
-  session_start();
-    if(!isset($_SESSION['UserName']) )
-    {
-      header("Location:index.php");
-    }
+  require("config.php");
 ?>
 <!DOCTYPE html>
 <html>
@@ -185,7 +180,6 @@
 
 <div style="float:right; overflow-x:scroll; overflow-y:scroll; width:750px; height:700px;">
   <?php
-    include 'connect.php';
     if($_SERVER['REQUEST_METHOD']=='POST' && isset($_POST['search'])){
       if(!isset($_POST['table'])){
         phpAlert("Please select the information to display.");

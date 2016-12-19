@@ -1,11 +1,6 @@
 <?php
-  require_once('connect.inc.php');
-  session_start();
+  require("config.php");
   ob_start();
-    if(!isset($_SESSION['UserName']) )
-    {
-      header("Location:index.php");
-    }
 ?>
 <!DOCTYPE html>
 <html>
@@ -116,7 +111,6 @@
         </script>
 <?php 
 $semester = $cid = $cname = $credits = $sids = "";
-include 'connect.php';
 if($_SERVER['REQUEST_METHOD']=="POST"){
     $semester = $_GET['course_semester'];
     $sem = explode("_",$semester);
@@ -211,12 +205,6 @@ function test_input($data){
     $data = stripslashes($data);
     $data = htmlspecialchars($data);
     return $data;
-}
-
-function redirect($url) {
-    header('Refresh:2; '.$url);
-    ob_end_flush();
-    die();
 }
 
 function phpAlert($msg) {

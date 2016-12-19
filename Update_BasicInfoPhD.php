@@ -1,14 +1,5 @@
 <?php
-  require_once('connect.inc.php');
-  session_start();
-    if(!isset($_SESSION['UserName']) )
-    {
-      header("Location:index.php");
-    }
-?>
-
-<?php
-include_once('connect.php');
+require("config.php");
 if(isset($_POST['update']))
 {
 	$sql= mysqli_query($conn,"UPDATE `phd_scholar` SET `ID`='".sanitize_input($_POST['id'])."',`name`='".sanitize_input($_POST['name'])."',`dept`='".sanitize_input($_POST['dept'])."',`email`='".sanitize_input($_POST['email'])."',`phone`='".sanitize_input($_POST['phone'])."',`gender`='".sanitize_input($_POST['gender'])."',`type`='".sanitize_input($_POST['type'])."',`YOA`='".sanitize_input($_POST['year'])."',`SOA`='".sanitize_input($_POST['semester'])."' WHERE `ID`='".sanitize_input($_GET['id'])."'") or die("Error try again");
