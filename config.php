@@ -31,7 +31,7 @@
     session_start();
 
     // require authentication for most pages
-    if (!preg_match("{(?:index|logout|forgotpassword|recoverpassword)\.php$}", $_SERVER["PHP_SELF"]))
+    if (!preg_match("{(?:index|logout|forgotpassword)|connectivity\.php$}", $_SERVER["PHP_SELF"]))
     {
         if (empty($_SESSION["UserName"]))
         {
