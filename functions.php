@@ -146,6 +146,24 @@
         exit;
     }
 
+
+
+
+//included in all files where user input is expected. Makes input SQL query safe.
+
+
+function sanitize_input($raw_input) 
+{
+	global $conn;
+	$raw_input = trim($raw_input);
+	$raw_input = str_replace("\n","<br>",$raw_input);
+	$raw_input = str_replace("\r","",$raw_input);
+	$raw_input = stripcslashes($raw_input);
+	$raw_input = htmlspecialchars($raw_input);
+	$raw_input = mysqli_real_escape_string($conn, $raw_input);
+	return $raw_input;
+}
+
     /**
      * Renders template, passing in values.
      */
