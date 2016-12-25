@@ -19,7 +19,7 @@
 				<form method="POST" action="connectivity.php"><b> UserName</b> <br>
 					<input type="text" name="user" ><br> <b>Password</b> <br>
 					<input type="password" name="pass" ><br> <br>
-					<input id="button" type="submit" name="submit" value="Log-In"> 
+					<input class="btn btn-primary" id="button" type="submit" name="submit" value="Log-In"> 
 					
 				</form> 
 				<?php 

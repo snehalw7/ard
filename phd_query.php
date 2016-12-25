@@ -55,8 +55,6 @@
         <input name="table" id="-5" value="5" type="radio" <?php if(isset($_POST['search'])&&isset($_POST['table'])){if(strcmp($_POST['table'],"5")==0) echo "checked='checked'"; } ?>>
         Evaluators' Expenses Information
 
-        <input name="table" id="-6" value="6" type="radio" <?php if(isset($_POST['search'])&&isset($_POST['table'])){if(strcmp($_POST['table'],"6")==0) echo "checked='checked'"; } ?>>
-        Courses Information
     </div>
     </div>
     </div>
@@ -213,9 +211,6 @@
       else if(strcmp($table,5)==0){
         $query = "SELECT phd_scholar."."ID, name, evaluator, thesis_examination_fee as 'Thesis examination fee', viva_fee as 'Viva Fee', conveyance, postal_charges as 'Postal Charges', food from phd_scholar, phd_evaluator_expenses, phd_thesis where phd_scholar.ID = phd_evaluator_expenses.ID ";
       }
-      else if(strcmp($table, 6)==0){
-        #handle courses
-      }
 
       if(!empty($yoa)){
         if(strcmp($table,"0")==0 && $flag == true){
@@ -259,21 +254,21 @@
       }
 
       if(!empty($phd_status) && strcmp($phd_status,"all") !=0){
-        
+        $today = date('Y-m-d');
         if(strcmp($table,"0")==0 && $flag == true){
           if(strcmp($phd_status,"completed")==0){
-            $query = $query."phd_awarded_date IS NOT NULL";
+            $query = $query."phd_awarded_date IS NOT NULL AND phd_awarded_date <= '".$today."'";
           }
           else{
-            $query = $query."phd_awarded_date IS NULL";
+            $query = $query."(phd_awarded_date IS NULL OR phd_awarded_date > '".$today."')";
           }
         }
         else{
           if(strcmp($phd_status,"completed")==0){
-            $query = $query."AND phd_awarded_date IS NOT NULL";
+            $query = $query."AND phd_awarded_date IS NOT NULL AND phd_awarded_date <= '".$today."'";
           }
           else{
-            $query = $query."AND phd_awarded_date IS NULL";
+            $query = $query."AND (phd_awarded_date IS NULL OR phd_awarded_date > '".$today."')";
           }
         }
         $flag=false;
