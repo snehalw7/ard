@@ -160,7 +160,6 @@
         }
         else if(empty($sid) && !empty($sname) && empty($sem) && empty($year)){
             $sname = test_input($sname);
-            include 'connect.php';
             if(!ctype_alpha(str_replace(' ','',$sname))){
                 phpAlert("Please check the student's name.");
             }
@@ -194,7 +193,6 @@
             $sem = test_input($sem);
             $year = test_input($year);
             $semester = $sem."_".$year;
-            include 'connect.php';
             if(!strcmp($sem,"I")){
               $d = "August 01 ".substr($year,0,4);
             }

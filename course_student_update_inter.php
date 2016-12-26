@@ -6,7 +6,6 @@ if($_SERVER["REQUEST_METHOD"]=="POST" && isset($_POST['update_btn'])){
         $cnt = 0;
         $exec_query = mysqli_query($conn, $query);
                 while(mysqli_num_rows($exec_query)>0 && $row = mysqli_fetch_assoc($exec_query)){
-                    
                     if(empty($row['grade'])){
                         $grade = $_POST["update_grade_".$cnt];
                     if(!empty($grade)){
@@ -16,7 +15,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST" && isset($_POST['update_btn'])){
                     }
                     $cnt = $cnt +1;
                 }
-                redirect('course_student_update.php?course_student_id='.$sid);
+               
              }
-             
+          redirect('course_student_update.php?course_student_id='.$sid);    
 ?>

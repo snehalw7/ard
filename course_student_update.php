@@ -87,7 +87,7 @@ while(mysqli_num_rows($exec_query)>0 && $row = mysqli_fetch_assoc($exec_query)){
         <td>
             <select id=<?php echo "update_grade_".$cnt; ?> class="form-control" name=<?php echo "update_grade_".$cnt; ?>>
                 <option value=""></option>
-                            <option value="A" <?php if(isset($_POST['update_btn'])&&isset($_POST['update_grade_'.$cnt])){if(strcmp($_POST['update_grade_'.$cnt],"A")==0) echo "selected";} ?>>A</option>
+                            <option value="A" >A</option>
                             <option value="A-">A-</option>
                             <option value="B">B</option>
                             <option value="B-">B-</option>
@@ -131,8 +131,10 @@ $cnt = $cnt + 1;
 <div class="col-md-6 text-right">
     <button id="" name="update_btn" class="btn btn-success" onclick="submitForm('grade_update')"}>Update</button>
 </div>
+</form>
+<form method="POST">
   <div class="col-md-6 text-left">
-    <button id="" name="back_btn" class="btn btn-primary" onclick="document.location.href='course_home.php'"?> Back</button>
+    <button id="" name="back_btn" class="btn btn-primary" onclick=<?php if(isset($_POST['back_btn'])){redirect('course_home.php');} ?>> Back</button>
   </div>
   </form>
 </body>

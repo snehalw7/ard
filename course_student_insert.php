@@ -1,11 +1,6 @@
 ﻿<?php
-    require_once('connect.inc.php');
-    session_start();
     ob_start();
-        if(!isset($_SESSION['UserName']) )
-        {
-            header("Location:index.php");
-        }
+    require('config.php');
 ?>
 <!DOCTYPE html>
 <html>
@@ -143,7 +138,6 @@
 </div>
 <?php
         $semester = $cid = $cname = $credits = $grade = $sid = "";
-        include 'connect.php';
         $sid = $_GET['course_student_id'];
         if($_SERVER["REQUEST_METHOD"]=="POST"){
             $sem = ($_POST["sem"]);

@@ -40,17 +40,14 @@
 <div class="container">
 <div class="col-md-12">
 <form name="update_course_grade" method="post" action= <?php echo "course_semester_update.php?course_semester=".$_GET['course_semester'] ?> >
+  <legend>Semester : <?php echo $sem;?></legend>
   <label class="col-md-3 control-label text-right" for="">Enter Course ID</label>  
+
   <div class="col-md-4">
-  <input id="cid" name="cid" placeholder="" class="form-control input-md" type="text" <?php if(isset($_POST['update_grade_btn'])){echo "value='".$_POST['cid']."'";} ?> <?php if(isset($_POST['update_grade_btn'])) echo "required=''"; ?>>  
+  <input id="cid" name="cid" class="form-control input-md" type="text" <?php if(isset($_POST['update_grade_btn'])){echo "placeholder='".$_SESSION['course_id']."'";} ?> <?php if(isset($_POST['update_grade_btn'])) echo "required=''"; ?>>  
   </div>
   <div class="col-md-2 text-right">
-    <button id="" name="update_grade_btn" class="btn btn-success" onclick="submitForm('update_course_grade')">Update</button>
-  </div>
-  </form>
-  <form method="post">
-  <div class="col-md-3 text-left">
-    <button id="" name="back_btn" class="btn btn-primary" onclick=<?php if(isset($_POST['back_btn'])){$_SESSION['course_id']=""; redirect('course_home.php');} ?>>Back</button>
+    <button id="" name="update_grade_btn" class="btn btn-success" onclick="submitForm('update_course_grade')">Show student List</button>
   </div>
   </form>
 </div>
@@ -68,10 +65,21 @@
 		$cid = explode(" ",$_SESSION['course_id']);
 		$cid = $cid[0]."_".$cid[1];
 	}
+    if(isset($_SESSION['course_id'])&&!empty($_SESSION['course_id'])){
+    $cid = explode(" ",$_SESSION['course_id']);
+        $cid = $cid[0]."_".$cid[1];
+$query = "SELECT ID, grade from phd_courses where semester='".$sem."' AND courseID ='".$_SESSION['course_id']."' order by ID;";
+}
+else{
+    $cid='';
+    $query = "SELECT ID, grade from phd_courses where semester='".$sem."' AND courseID ='' order by ID;";
+}
+$exec_query = mysqli_query($conn, $query);
 ?>
 
-<div class="container" style="overflow-y:scroll; height:600px;">
+<div class="container" style="overflow-y:scroll; height:400px;">
 <div class="col-md-8">
+<form name="grade_update" method="POST" action=<?php echo "course_semester_update_inter.php?&course_semester=".$_GET['course_semester']; ?> >
 <table class="table table-bordered table-striped" id="sem_update">
     <thead>
         <tr>
@@ -85,16 +93,7 @@
     </thead>
     <tbody>
 <?php
-if(isset($_SESSION['course_id'])&&!empty($_SESSION['course_id'])){
-	$cid = explode(" ",$_SESSION['course_id']);
-		$cid = $cid[0]."_".$cid[1];
-$query = "SELECT ID, grade from phd_courses where semester='".$sem."' AND courseID ='".$_SESSION['course_id']."' order by ID;";
-}
-else{
-	$cid='';
-	$query = "SELECT ID, grade from phd_courses where semester='".$sem."' AND courseID ='' order by ID;";
-}
-$exec_query = mysqli_query($conn, $query);
+$cnt = 0;
 while(mysqli_num_rows($exec_query)>0 && $row = mysqli_fetch_assoc($exec_query)){
 
 ?>
@@ -109,8 +108,7 @@ while(mysqli_num_rows($exec_query)>0 && $row = mysqli_fetch_assoc($exec_query)){
                 
         ?>
         <td>
-        <form name="grade_update" method="POST" action=<?php echo "course_semester_update_inter.php?cid=".$cid."&id=".$row['ID']."&course_semester=".$_GET['course_semester']; ?> >
-            <select id="update_grade" class="form-control" name="update_grade" onchange="submitForm('grade_update')">
+            <select id=<?php echo "update_grade_".$cnt; ?> class="form-control" name=<?php echo "update_grade_".$cnt; ?>>
                 <option value=""></option>
                             <option value="A">A</option>
                             <option value="A-">A-</option>
@@ -128,19 +126,28 @@ while(mysqli_num_rows($exec_query)>0 && $row = mysqli_fetch_assoc($exec_query)){
                             <option value="TGA">TGA</option>
                             <option value="GA">GA</option>
                             <option value="DP">DP</option>
-            </select>
-            </form>
-            
+            </select>            
         </td>
         </tr>
 
      <?php 
-	}}
+	}
+$cnt = $cnt +1;
+}
  ?>
 </tbody>
 </table>
 </div>
 </div>
-
+<div class="col-md-6 text-right">
+    <button id="" name="update_btn" class="btn btn-success" onclick="submitForm('grade_update')"}>Update</button>
+</div>
+</form>
+  <form method="POST">
+  <div class="col-md-6 text-left">
+    <button id="" name="back_btn" class="btn btn-primary" onclick=<?php if(isset($_POST['back_btn'])){redirect('course_home.php');} ?>> Back</button>
+  </div>
+  </form>
+  
 </body>
 </html>
