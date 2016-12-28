@@ -35,9 +35,43 @@
             </div><!-- /.navbar-collapse -->
         </div>
 </nav>
-<?php 
 
-$base_query = "SELECT phd_scholar"."."."ID as ID, name, dept, supervisor, examiner1, examiner2, DAC1, DAC2 from phd_scholar, phd_thesis where phd_scholar"."."."ID=phd_thesis.ID order by YOA, phd_scholar.ID;";
+<div class="container">
+<div class="col-md-12">
+<form name="viva_report" method="POST" action="phd_viva_report.php">
+<label class="col-md-3 control-label" for="phd_type">PhD Completion Status</label>
+  <div class="col-md-3">
+    <select id="phd_status" name="phd_status" class="form-control">
+    <option value="all" <?php if(isset($_POST['generate'])&&isset($_POST['phd_status'])){if(strcmp($_POST['phd_status'],"all")==0) echo "selected"; } ?>>All</option>
+    <option value="on-going" <?php if(isset($_POST['generate'])&&isset($_POST['phd_status'])){if(strcmp($_POST['phd_status'],"on-going")==0) echo "selected"; } ?>>On-going</option>
+    <option value="completed" <?php if(isset($_POST['generate'])&&isset($_POST['phd_status'])){if(strcmp($_POST['phd_status'],"completed")==0) echo "selected"; } ?>>Completed</option>
+    </select>
+  </div>
+  <div class="col-md-3 text-right">
+<button name="generate" class="btn btn-primary" onclick="submitForm('viva_report')">Generate Report</button>
+</div>
+ <div class="col-md-3 text-left">
+    <button id="" name="" class="btn btn-primary" onclick="">Export as CSV</button>
+  </div>
+</form>
+</div>
+<div class="col-md-12">
+<br>
+
+<?php 
+$status='phd_scholar.ID = phd_thesis.ID';
+$today = date('Y-m-d');
+if($_SERVER['REQUEST_METHOD']=='POST' && isset($_POST['generate'])){
+	if(strcmp($_POST['phd_status'],'on-going')==0){
+		$status =	"phd_scholar.ID = phd_thesis.ID AND (phd_awarded_date IS NULL OR phd_awarded_date > '".$today."')";
+	}
+	else{
+		if(strcmp($_POST['phd_status'],'completed')==0){
+		$status = "phd_scholar.ID = phd_thesis.ID AND phd_awarded_date IS NOT NULL AND phd_awarded_date <= '".$today."'";
+		}
+	}
+}
+$base_query = "SELECT phd_scholar"."."."ID as ID, name, dept, supervisor, examiner1, examiner2, DAC1, DAC2 from phd_scholar, phd_thesis where ".$status." order by YOA, phd_scholar.ID;";
 $exec_query = mysqli_query($conn,$base_query);
 ?>
 <div class="col-md-12">
@@ -118,9 +152,16 @@ $exec_query = mysqli_query($conn,$base_query);
 	</tbody>
 
 </table>
-  <div class="col-md-12 text-center">
-    <button id="" name="" class="btn btn-primary" onclick="">Export as CSV</button>
-  </div>
 </div>
+</div>
+</div>
+<script type="text/javascript">
+            function submitForm(name){
+                var form = document.getElementsByName(name)[0];
+                form.submit();
+                return false;
+            }
+          
+        </script>
 </body>
 </html>
