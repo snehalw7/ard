@@ -41,6 +41,9 @@ $dept_query = "SELECT distinct dept from phd_scholar;";
 $exec_query = mysqli_query($conn,$dept_query);
 ?>
 <div class="container">
+<div class="col-md-6 text-center">
+
+</div> 
 <div class="col-md-12">
 <table class="table table-bordered table-striped" id="viva_report">
 <legend class="text-center">No. of Ph.D Research Scholars at BITS-Pilani, Hyderabad campus as on <?php echo date("d.m.Y"); ?></legend>

@@ -80,7 +80,7 @@
 				</form>
 				<br />
 				<form method="POST"> 
-					<input class="btn btn-primary" id="button" type="button" name="courses" value="Add/Update Course Information" onclick="document.location.href='course_home.php'" >
+					<input class="btn btn-primary" id="button" type="button" name="courses" value="Add/Update/View Course Information" onclick="document.location.href='course_home.php'" >
 				</form>
 				<br />
 

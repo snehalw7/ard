@@ -2,6 +2,112 @@
     ob_start();
     require('config.php');
 ?>
+<?php
+        $semester = $cid = $cname = $credits = $grade = $sid = "";
+        $sid = $_GET['course_student_id'];
+        if($_SERVER["REQUEST_METHOD"]=="POST"){
+            $sem = ($_POST["sem"]);
+            $year = ($_POST["year"]);
+            if(empty($sem)||empty($year)){
+                alert("Please enter the semester",1);
+            }
+            else{
+                $sem = test_input($sem);
+                $year = test_input($year);
+                $semester = $sem." ".$year;
+                $cid = $_POST["cid"];
+                if(empty($cid)){
+                    alert("Please enter the course ID",1);
+                }
+                else{
+                    $cid = test_input($cid);
+                    $cname = $_POST["cname"];
+                    if(!empty($cname))
+                        $cname = test_input($cname);
+                    else
+                        $cname = NULL;
+                    $credits = $_POST["credit"];
+                    if(!empty($credits))
+                        $credits = test_input($credits);
+                    $grade = $_POST["grade"];
+                    if(!empty($grade))
+                        $grade = test_input($grade);
+                    $query1 = "SELECT distinct credits from phd_courses where courseID = '".$cid."';";
+                    $query2 = "SELECT distinct course_name from phd_courses where CourseID = '".$cid."';";
+                    $exec_query1 = mysqli_query($conn,$query1);
+                    $exec_query2 = mysqli_query($conn, $query2);
+                    $credit_result = mysqli_fetch_array($exec_query1,MYSQLI_ASSOC);
+                    $course_result = mysqli_fetch_array($exec_query2,MYSQLI_ASSOC);
+                    $credit_flag = true;
+                    $course_flag = true;
+                    if(mysqli_num_rows($exec_query1)<=0&&empty($credits)){
+                        alert("Please enter number of credits",1);
+                        $credit_flag = false;
+                    }
+                    else{
+                        if(mysqli_num_rows($exec_query1)>0&&empty($credits)){
+                            $credits = $credit_result["credits"];
+                        }
+                        else{
+                            if(mysqli_num_rows($exec_query1)>0&&!empty($credits)){
+                                if((int)$credits != $credit_result["credits"]){
+                                    alert("Number of credits entered here and stored in database previously does not match for the given course ID",2);
+                                    $credit_flag = false;
+                                }
+                            }
+                        }
+                    }
+                    if(mysqli_num_rows($exec_query2)<=0 && empty($cname)){
+                        alert("Please enter course name",1);
+                        $course_flag = false;
+                    }
+                    else{
+                        if(mysqli_num_rows($exec_query2)>0 && empty($cname)){
+                            $cname = $course_result["course_name"];
+                        }
+                        else{
+                            if(mysqli_num_rows($exec_query2)>0 && !empty($cname)){
+                                if(strcasecmp($cname,$course_result["course_name"])){
+                                    alert("Course Name entered here and stored in database previously does not match for the given course ID",2);
+                                    $course_flag = false;
+                                }
+                            }
+                        }
+                    }
+                    
+                    $query2 = "";
+                    if($credit_flag && $course_flag){
+                        if(!empty($cname)&&!empty($grade)){
+                            $query2 = "INSERT into phd_courses values ('".$sid."', '".$cid."', '".$semester."', '".$cname."', ".(int)$credits.", '".$grade."');";
+                        }
+                        else if(!empty($cname)){
+                            $query2 = "INSERT into phd_courses(ID,courseID,semester,course_name,credits) values ('".$sid."', '".$cid."', '".$semester."', '".$cname."', ".(int)$credits.");";
+                        }
+                        else if(!empty($grade)){
+                            $query2 = "INSERT into phd_courses(ID,courseID,semester,credits,grade) values('".$sid."', '".$cid."', '".$semester."', ".(int)$credits.", '".$grade."');";
+                        }
+                        else{
+                            $query2 = "INSERT into phd_courses(ID,courseID,semester,credits) values('".$sid."', '".$cid."', '".$semester."', ".(int)$credits.");";
+                        }
+                        $exec_query2 = mysqli_query($conn,$query2);
+                        if($exec_query2 == false){
+                            alert("Record already exists in database",2);
+                        }
+                        else{
+                            alert("Record inserted successfully",3);
+                        }
+                    }
+                }
+            }
+        }
+function test_input($data){
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+}
+
+?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -136,118 +242,7 @@
 </fieldset>
 </form>
 </div>
-<?php
-        $semester = $cid = $cname = $credits = $grade = $sid = "";
-        $sid = $_GET['course_student_id'];
-        if($_SERVER["REQUEST_METHOD"]=="POST"){
-            $sem = ($_POST["sem"]);
-            $year = ($_POST["year"]);
-            if(empty($sem)||empty($year)){
-                phpAlert("Please enter the semester");
-            }
-            else{
-                $sem = test_input($sem);
-                $year = test_input($year);
-                $semester = $sem." ".$year;
-                $cid = $_POST["cid"];
-                if(empty($cid)){
-                    phpAlert("Please enter the course ID");
-                }
-                else{
-                    $cid = test_input($cid);
-                    $cname = $_POST["cname"];
-                    if(!empty($cname))
-                        $cname = test_input($cname);
-                    else
-                        $cname = NULL;
-                    $credits = $_POST["credit"];
-                    if(!empty($credits))
-                        $credits = test_input($credits);
-                    $grade = $_POST["grade"];
-                    if(!empty($grade))
-                        $grade = test_input($grade);
-                    $query1 = "SELECT distinct credits from phd_courses where courseID = '".$cid."';";
-                    $query2 = "SELECT distinct course_name from phd_courses where CourseID = '".$cid."';";
-                    $exec_query1 = mysqli_query($conn,$query1);
-                    $exec_query2 = mysqli_query($conn, $query2);
-                    $credit_result = mysqli_fetch_array($exec_query1,MYSQLI_ASSOC);
-                    $course_result = mysqli_fetch_array($exec_query2,MYSQLI_ASSOC);
-                    $credit_flag = true;
-                    $course_flag = true;
-                    if(mysqli_num_rows($exec_query1)<=0&&empty($credits)){
-                        phpAlert("Please enter number of credits");
-                        $credit_flag = false;
-                    }
-                    else{
-                        if(mysqli_num_rows($exec_query1)>0&&empty($credits)){
-                            $credits = $credit_result["credits"];
-                        }
-                        else{
-                            if(mysqli_num_rows($exec_query1)>0&&!empty($credits)){
-                                if((int)$credits != $credit_result["credits"]){
-                                    phpAlert("Number of credits entered here and stored in database previously does not match for the given course ID");
-                                    $credit_flag = false;
-                                }
-                            }
-                        }
-                    }
-                    if(mysqli_num_rows($exec_query2)<=0 && empty($cname)){
-                        phpAlert("Please enter course name");
-                        $course_flag = false;
-                    }
-                    else{
-                        if(mysqli_num_rows($exec_query2)>0 && empty($cname)){
-                            $cname = $course_result["course_name"];
-                        }
-                        else{
-                            if(mysqli_num_rows($exec_query2)>0 && !empty($cname)){
-                                if(strcasecmp($cname,$course_result["course_name"])){
-                                    phpAlert("Course Name entered here and stored in database previously does not match for the given course ID");
-                                    $course_flag = false;
-                                }
-                            }
-                        }
-                    }
-                    
-                    $query2 = "";
-                    if($credit_flag && $course_flag){
-                        if(!empty($cname)&&!empty($grade)){
-                            $query2 = "INSERT into phd_courses values ('".$sid."', '".$cid."', '".$semester."', '".$cname."', ".(int)$credits.", '".$grade."');";
-                        }
-                        else if(!empty($cname)){
-                            $query2 = "INSERT into phd_courses(ID,courseID,semester,course_name,credits) values ('".$sid."', '".$cid."', '".$semester."', '".$cname."', ".(int)$credits.");";
-                        }
-                        else if(!empty($grade)){
-                            $query2 = "INSERT into phd_courses(ID,courseID,semester,credits,grade) values('".$sid."', '".$cid."', '".$semester."', ".(int)$credits.", '".$grade."');";
-                        }
-                        else{
-                            $query2 = "INSERT into phd_courses(ID,courseID,semester,credits) values('".$sid."', '".$cid."', '".$semester."', ".(int)$credits.");";
-                        }
-                        $exec_query2 = mysqli_query($conn,$query2);
-                        if($exec_query2 == false){
-                            phpAlert("Record already exists in database");
-                        }
-                        else{
-                            phpAlert("Record inserted successfully");
-                        }
-                    }
-                }
-            }
-            redirect("course_student_insert.php?course_student_id=".$sid);
-        }
-function test_input($data){
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    return $data;
-}
 
-function phpAlert($msg) {
-    echo '<script type="text/javascript">alert("' . $msg . '"); </script>';
-}
-
-
-?>
 <script type="text/javascript">
             function submitForm(name){
                 

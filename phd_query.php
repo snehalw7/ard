@@ -180,7 +180,7 @@
   <?php
     if($_SERVER['REQUEST_METHOD']=='POST' && isset($_POST['search'])){
       if(!isset($_POST['table'])){
-        phpAlert("Please select the information to display.");
+        alert("Please select the information to display.",1);
         die();
       }
       $table = $_POST['table'];
@@ -317,9 +317,6 @@
         }
       }
     }
-function phpAlert($msg) {
-    echo '<script type="text/javascript">alert("' . $msg . '"); </script>';
-}
   ?>
   </tbody>
 </table>

@@ -164,6 +164,28 @@ function sanitize_input($raw_input)
 	return $raw_input;
 }
 
+/**
+* mode = 1 for a warning type alert 
+* mode = 2 for a danger type alert
+* mode = 3 for a success type alert
+*/
+
+function alert($msg,$mode)
+{   
+    if($mode == 1)
+    {
+        echo '<div  class="alert alert-warning">'.$msg.'</div>';
+    }
+    if($mode == 2)
+    {
+        echo '<div class="alert alert-danger">'.$msg.'</div>';
+    }
+    if($mode == 3)
+    {
+        echo '<div class="alert alert-success">'.$msg.'</div>';
+    }
+}
+
     /**
      * Renders template, passing in values.
      */

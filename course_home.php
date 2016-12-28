@@ -2,6 +2,131 @@
     require("config.php");
     ob_start();
 ?>
+<?php
+    $sid = $sname = $sem = $year = $act ="";
+    if($_SERVER["REQUEST_METHOD"] == "POST"){
+        $sid = ($_POST["sid"]);
+        $sname = ($_POST["sname"]);
+        $sem = ($_POST["sem"]);
+        $year = ($_POST["year"]);
+        if(!empty($sid) && empty($sname) && empty($sem) && empty($year)){
+            $sid = test_input($sid);
+            if(!ctype_digit(substr($sid,0,4)) || !ctype_digit(substr($sid,8,3)) || !ctype_alpha(substr($sid,11))){
+                alert("Please check the student ID.",1);
+            }
+            else{
+                $query1 = "SELECT ID FROM phd_scholar where ID = '".$sid."';";
+                $exec_query1 = mysqli_query($conn, $query1);
+                if(mysqli_num_rows($exec_query1) <=0){
+                    alert("Student with the ID ".$sid." does not exist in the records. Please add the student's information before adding course information.",2);
+                }
+                else{
+                    if(isset($_POST['insert'])){
+                        redirect("course_student_insert.php?course_student_id=".$sid);
+                    }
+                    
+                    else{
+                        if(isset($_POST['update'])){
+                        redirect("course_student_update.php?course_student_id=".$sid);    
+                        }
+                        else{
+                            redirect("course_student_view.php?course_student_id=".$sid);
+                        }
+                    }
+                }
+
+            }
+        }
+        else if(empty($sid) && !empty($sname) && empty($sem) && empty($year)){
+            $sname = test_input($sname);
+            if(!ctype_alpha(str_replace(' ','',$sname))){
+                alert("Please check the student's name.",1);
+            }
+            else{
+              
+                $query1 = "SELECT name FROM phd_scholar where name LIKE '".$sname."%'";
+                $exec_query1 = mysqli_query($conn, $query1);
+                if(mysqli_num_rows($exec_query1) <= 0){
+                    alert("Student with the name ".$sname." does not exist in the records. Please add the student's information before adding course information.",2);
+                }
+                else{
+                    if(mysqli_num_rows($exec_query1) > 1){
+                        alert("More than one student exists with this name, please enter the student ID in this case.",1);
+                    }
+                    else{
+                    $query2 = "SELECT ID FROM phd_scholar where name LIKE '".$sname."%';";
+                    $exec_query2 = mysqli_query($conn,$query2);
+                    $sid = mysqli_fetch_assoc($exec_query2)["ID"];
+                    if(isset($_POST['insert'])){
+                        redirect("course_student_insert.php?course_student_id=".$sid);
+                    }
+                    else{
+                        if(isset($_POST['update'])){
+                         redirect("course_student_update.php?course_student_id=".$sid);
+                        }
+                        else{
+                            redirect("course_student_view.php?course_student_id=".$sid);
+                        }
+                    }
+                    }
+                }
+            }
+
+        }
+        else if(empty($sid) && empty($sname) && !empty($sem) && !empty($year)){
+            $sem = test_input($sem);
+            $year = test_input($year);
+            $semester = $sem."_".$year;
+            if(!strcmp($sem,"I")){
+              $d = "August 01 ".substr($year,0,4);
+            }
+            else if(!strcmp($sem,"II")){
+              $d = "December 31 ".substr($year,0,4);
+            }
+            else{
+              $d = "May 15 "."20".substr($year,5,2);
+            }
+            $query_date = strtotime($d);
+            $today = strtotime(date('Y-m-d'));
+            if($today < $query_date){
+              //warning message whether to proceed to future sem or not
+            }
+            else{
+                if(isset($_POST['insert'])){
+                    redirect("course_semester_insert.php?course_semester=".$semester);
+                }
+                else{
+                    if(isset($_POST['update'])){
+                        $_SESSION['course_id'] = "";
+                        redirect("course_semester_update.php?course_semester=".$semester);
+                    }
+                    else{
+                        $_SESSION['course_id'] = "";
+                        redirect("course_semester_view.php?course_semester=".$semester);
+                    }
+                }
+                
+            }
+            
+        }
+        else if((empty($sid) && empty($sname) && !empty($sem) && empty($year)) || (empty($sid) && empty($sname) && empty($sem) && !empty($year))){
+            alert("Please select both semester and year",1);
+        }
+        else{
+            alert("Enter one among ID, name and Semester.",1);         
+        }
+
+    }
+
+function test_input($data){
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+}
+
+?>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -107,12 +232,16 @@
 </div>
 <!-- Button -->
 <div class="form-group">
-  <div class="col-md-6 text-right">
+  <div class="col-md-5 text-right">
     <button id="" name="insert" class="btn btn-success" onclick="submitForm()">Insert</button>
   </div>
-  <div class="col-md-6 text-left">
-      <button id="" name="delete" class="btn btn-primary" onclick="submitForm()">Update</button>
+  <div class="col-md-2 text-center">
+      <button id="" name="update" class="btn btn-success" onclick="submitForm()">Update</button>
   </div>
+  <div class="col-md-5 text-left">
+        <button id="" name="view" class="btn btn-success" onclick="submitForm()">View</button>
+  </div>
+
 </div>
 
 </fieldset>
@@ -126,123 +255,6 @@
                 return false;
             }
 </script>
-<?php
-    $sid = $sname = $sem = $year = $act ="";
-    if($_SERVER["REQUEST_METHOD"] == "POST"){
-        $sid = ($_POST["sid"]);
-        $sname = ($_POST["sname"]);
-        $sem = ($_POST["sem"]);
-        $year = ($_POST["year"]);
-        if(!empty($sid) && empty($sname) && empty($sem) && empty($year)){
-            $sid = test_input($sid);
-            if(!ctype_digit(substr($sid,0,4)) || !ctype_digit(substr($sid,8,3)) || !ctype_alpha(substr($sid,11))){
-                phpAlert("Please check the student ID.");
-            }
-            else{
-                $query1 = "SELECT ID FROM phd_scholar where ID = '".$sid."';";
-                $exec_query1 = mysqli_query($conn, $query1);
-                if(mysqli_num_rows($exec_query1) <=0){
-                    phpAlert("Student with the ID ".$sid." does not exist in the records. Please add the student's information before adding course information.");
-                }
-                else{
-                    #$query2 = "SELECT * FROM phd_courses where ID = '".$sid."';";
-                    #$exec_query2 = mysqli_query($conn,$query2);
-                    if(isset($_POST['insert'])){
-                        redirect("course_student_insert.php?course_student_id=".$sid);
-                    }
-                    
-                    else{
-                        redirect("course_student_update.php?course_student_id=".$sid);   
-                    }
-                }
-
-            }
-        }
-        else if(empty($sid) && !empty($sname) && empty($sem) && empty($year)){
-            $sname = test_input($sname);
-            if(!ctype_alpha(str_replace(' ','',$sname))){
-                phpAlert("Please check the student's name.");
-            }
-            else{
-              
-                $query1 = "SELECT name FROM phd_scholar where name LIKE '".$sname."%'";
-                $exec_query1 = mysqli_query($conn, $query1);
-                if(mysqli_num_rows($exec_query1) <= 0){
-                    phpAlert("Student with the name ".$sname." does not exist in the records. Please add the student's information before adding course information.");
-                }
-                else{
-                    if(mysqli_num_rows($exec_query1) > 1){
-                        //resolve name clashes 
-                    }
-                    else{
-                    $query2 = "SELECT ID FROM phd_scholar where name LIKE '".$sname."%';";
-                    $exec_query2 = mysqli_query($conn,$query2);
-                    $sid = mysqli_fetch_assoc($exec_query2)["ID"];
-                    if(isset($_POST['insert'])){
-                        redirect("course_student_insert.php?course_student_id=".$sid);
-                    }
-                    else{
-                         redirect("course_student_update.php?course_student_id=".$sid);
-                    }
-                    }
-                }
-            }
-
-        }
-        else if(empty($sid) && empty($sname) && !empty($sem) && !empty($year)){
-            $sem = test_input($sem);
-            $year = test_input($year);
-            $semester = $sem."_".$year;
-            if(!strcmp($sem,"I")){
-              $d = "August 01 ".substr($year,0,4);
-            }
-            else if(!strcmp($sem,"II")){
-              $d = "December 31 ".substr($year,0,4);
-            }
-            else{
-              $d = "May 15 "."20".substr($year,5,2);
-            }
-            $query_date = strtotime($d);
-            $today = strtotime(date('Y-m-d'));
-            if($today < $query_date){
-              //warning message whether to proceed to future sem or not
-            }
-            else{
-              #$query1 = "SELECT * FROM phd_courses where semester = '".$semester."%';";
-                #$exec_query1 = mysqli_query($conn,$query1);
-                if(isset($_POST['insert'])){
-                    redirect("course_semester_insert.php?course_semester=".$semester);
-                }
-                else{
-                    session_start();
-                    $_SESSION['course_id'] = "";
-                    redirect("course_semester_update.php?course_semester=".$semester);
-                }
-                
-            }
-            
-        }
-        else if((empty($sid) && empty($sname) && !empty($sem) && empty($year)) || (empty($sid) && empty($sname) && empty($sem) && !empty($year))){
-            phpAlert("Please select both semester and year");
-        }
-        else{
-            phpAlert("Enter one among ID, name and Semester.");         
-        }
-
-    }
-
-function test_input($data){
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    return $data;
-}
-
-function phpAlert($msg) {
-    echo '<script type="text/javascript">alert("' . $msg . '"); </script>';
-}
-# form gets reset after phpAlert, should not reset - check.
-?>
 
 </body>
 </html>
