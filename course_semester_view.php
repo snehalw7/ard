@@ -92,12 +92,19 @@ $exec_query = mysqli_query($conn, $query);
     </thead>
     <tbody>
 <?php
+
+$csv_hdr = "Student ID, Grade";
+
+$csv_output = "";
+
+$filename = "courses_".$semester."_".$cid;
+
 while(mysqli_num_rows($exec_query)>0 && $row = mysqli_fetch_assoc($exec_query)){
 ?>
     <tr>
-    <td> <?php echo $row['ID']; ?> </td>
+    <td> <?php echo $row['ID']; $csv_output .= $row['ID'].", "; ?> </td>
         
-            <td> <?php echo $row['grade']; ?> </td>
+            <td> <?php echo $row['grade']; $csv_output .= $row['grade']."\n"; ?> </td>
         </tr>
 
      <?php 
@@ -107,10 +114,16 @@ while(mysqli_num_rows($exec_query)>0 && $row = mysqli_fetch_assoc($exec_query)){
 </table>
 </div>
 </div>
-  <form method="POST">
+ <form name="export" action="export.php" method="post">
   <div class="col-md-6 text-right">
-    <button id="" name="csv_btn" class="btn btn-success" onclick=""}>Export as CSV</button>
-</div>
+    <input type="submit" class="btn btn-success"  value="Export table to CSV">
+    </div>
+    <input type="hidden" value="<? echo $csv_hdr; ?>" name="csv_hdr">
+    <input type="hidden" value="<? echo $csv_output; ?>" name="csv_output">
+    <input type="hidden" value="<? echo $filename; ?>" name="filename">
+</form>
+ 
+ <form method="POST">
   <div class="col-md-6 text-left">
     <button id="" name="back_btn" class="btn btn-primary" onclick=<?php if(isset($_POST['back_btn'])){redirect('course_home.php');} ?>> Back</button>
   </div>

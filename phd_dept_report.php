@@ -1,5 +1,10 @@
 <?php
 	require("config.php");	
+	$csv_hdr = "S.No, Department, Full Time - Institute Fellowship, Full Time - Project fellows extension support from Institute, Full Time - No Fellowship, Full Time - Own Fellowship, Full Time - Project Fellows, Full Time - Others, Full Time - Total, Part Time, Aspirants, Lecturer, Grand Total";
+
+	$csv_output = "";
+
+	$filename = "dept_report_all";
 ?>
 
 <!DOCTYPE html>
@@ -37,10 +42,10 @@
         </div>
 </nav>
 <div class="container">
-<div class="col-md-12">
+<div class="col-md-10">
 <form name="dept_report" method="POST" action="phd_dept_report.php">
 <label class="col-md-3 control-label" for="phd_type">PhD Completion Status</label>
-  <div class="col-md-3">
+  <div class="col-md-6">
     <select id="phd_status" name="phd_status" class="form-control">
     <option value="all" <?php if(isset($_POST['generate'])&&isset($_POST['phd_status'])){if(strcmp($_POST['phd_status'],"all")==0) echo "selected"; } ?>>All</option>
     <option value="on-going" <?php if(isset($_POST['generate'])&&isset($_POST['phd_status'])){if(strcmp($_POST['phd_status'],"on-going")==0) echo "selected"; } ?>>On-going</option>
@@ -50,10 +55,18 @@
   <div class="col-md-3 text-right">
 <button name="generate" class="btn btn-primary" onclick="submitForm('dept_report')">Generate Report</button>
 </div>
- <div class="col-md-3 text-left">
-    <button id="" name="" class="btn btn-primary" onclick="">Export as CSV</button>
-  </div>
+</div>
+<div class="col-md-2">
 </form>
+  <form name="export" action="export.php" method="post">
+  <div class="col-md-12 text-left">
+    <input type="submit" class="btn btn-success"  value="Export table to CSV">
+    </div>
+    <input type="hidden" value="<? echo $csv_hdr; ?>" name="csv_hdr">
+    <input type="hidden" value="<? echo $csv_output; ?>" name="csv_output">
+    <input type="hidden" value="<? echo $filename; ?>" name="filename">
+</form>
+</div>
 </div>
 <div class="col-md-12">
 <br> 
@@ -65,10 +78,12 @@ $today = date('Y-m-d');
 if($_SERVER['REQUEST_METHOD']=='POST' && isset($_POST['generate'])){
 	if(strcmp($_POST['phd_status'],'on-going')==0){
 		$status =	"AND phd_scholar.ID = phd_thesis.ID AND (phd_awarded_date IS NULL OR phd_awarded_date > '".$today."')";
+		$filename = "dept_report_ongoing";
 	}
 	else{
 		if(strcmp($_POST['phd_status'],'completed')==0){
 		$status = "AND phd_scholar.ID = phd_thesis.ID AND phd_awarded_date IS NOT NULL AND phd_awarded_date <= '".$today."'";
+		$filename = "dept_report_completed";
 		}
 	}
 }
@@ -131,8 +146,8 @@ if($_SERVER['REQUEST_METHOD']=='POST' && isset($_POST['generate'])){
 				if(!empty($dept['dept'])){
 		?>
 			<tr>
-			<td> <?php echo $cnt; ?> </td>
-			<td> <?php echo $dept['dept']; ?> </td>
+			<td> <?php echo $cnt; $csv_output .= $cnt.", "; ?> </td>
+			<td> <?php echo $dept['dept']; $csv_output .= $dept['dept'].", "; ?> </td>
 			<?php 
 				$full1 = "SELECT count(*) from phd_scholar, phd_fellowship,phd_thesis where phd_scholar."."type = 'full time' AND phd_scholar.dept = '".$dept['dept']."' AND phd_fellowship.type = 'institute fellowship' AND phd_scholar.ID = phd_fellowship.ID ".$status;
 
@@ -181,18 +196,18 @@ if($_SERVER['REQUEST_METHOD']=='POST' && isset($_POST['generate'])){
 
 			 ?>
 
-			 <td> <?php echo $count_full1; ?> </td>
-			 <td> <?php echo $count_full2; ?> </td>
-			 <td> <?php echo $count_full3; ?> </td>
-			 <td> <?php echo $count_full4; ?> </td>
-			 <td> <?php echo $count_full5; ?> </td>
-			 <td> <?php echo $count_full6; ?> </td>
-			 <td> <?php echo $full_total; ?> </td>
-			 <td> <?php echo $count_part; ?> </td>
-			 <td> <?php echo $count_aspirant; ?> </td>
-			 <td> <?php echo $count_lecturer; ?> </td>
-			 <td> <?php echo $total; ?> </td>
-		<?php $cnt=$cnt+1; }} ?>
+			 <td> <?php echo $count_full1; $csv_output .= $count_full1.", ";  ?> </td>
+			 <td> <?php echo $count_full2; $csv_output .= $count_full2.", "; ?> </td>
+			 <td> <?php echo $count_full3; $csv_output .= $count_full3.", "; ?> </td>
+			 <td> <?php echo $count_full4; $csv_output .= $count_full4.", "; ?> </td>
+			 <td> <?php echo $count_full5; $csv_output .= $count_full5.", "; ?> </td>
+			 <td> <?php echo $count_full6; $csv_output .= $count_full6.", "; ?> </td>
+			 <td> <?php echo $full_total; $csv_output .= $full_total.", "; ?> </td>
+			 <td> <?php echo $count_part; $csv_output .= $count_part.", "; ?> </td>
+			 <td> <?php echo $count_aspirant; $csv_output .= $count_aspirant.", "; ?> </td>
+			 <td> <?php echo $count_lecturer; $csv_output .= $count_lecturer.", "; ?> </td>
+			 <td> <?php echo $total; $csv_output .= $total."\n"; ?> </td>
+		<?php $cnt=$cnt+1;}} ?>
 		</tr>
 	</tbody>
 

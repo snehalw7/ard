@@ -158,9 +158,14 @@
   <div class="col-md-4 text-right">
     <button id="search" name="search" class="btn btn-primary" onclick="submitForm()">Search</button>
   </div>
-  <div class="col-md-6 text-center">
-    <button id="csv" name="csv" class="btn btn-primary" onclick="">Export as CSV</button>
-  </div>
+  <form name="export" action="export.php" method="post">
+  <div class="col-md-6 text-right">
+    <input type="submit" class="btn btn-success"  value="Export table to CSV">
+    </div>
+    <input type="hidden" value="<? echo $csv_hdr; ?>" name="csv_hdr">
+    <input type="hidden" value="<? echo $csv_output; ?>" name="csv_output">
+    <input type="hidden" value="<? echo $filename; ?>" name="filename">
+</form>
 </div>
 
 
@@ -179,6 +184,9 @@
 <div style="float:right; overflow-x:scroll; overflow-y:scroll; width:750px; height:700px;">
   <?php
     if($_SERVER['REQUEST_METHOD']=='POST' && isset($_POST['search'])){
+
+      
+
       if(!isset($_POST['table'])){
         alert("Please select the information to display.",1);
         die();

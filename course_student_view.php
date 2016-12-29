@@ -64,22 +64,28 @@
 <?php
 $query = "SELECT semester, courseID, course_name, credits, grade, (SELECT SUBSTRING(semester,POSITION(' ' IN semester)) from phd_courses where ID='".$sid."' AND courseID =ph."."courseID AND semester = ph.semester) as year from phd_courses ph where ID='".$sid."' order by year;";
 $exec_query = mysqli_query($conn, $query);
+
+$csv_hdr = "Semester, CourseID, Course Name, Credits, Grade";
+
+$csv_output = "";
+
+$filename = "courses_".$sid;
 while(mysqli_num_rows($exec_query)>0 && $row = mysqli_fetch_assoc($exec_query)){
 
 ?>
     <tr>
-    <td> <?php echo $row['semester']; ?> </td>
+    <td> <?php echo $row['semester']; $csv_output .= $row['semester'].", "; ?> </td>
         
-            <td> <?php echo $row['courseID']; ?> </td>
+            <td> <?php echo $row['courseID']; $csv_output .= $row['courseID']. ", "; ?> </td>
         
-            <td> <?php echo $row['course_name']; ?> </td>
+            <td> <?php echo $row['course_name']; $csv_output .= $row['course_name'].", "; ?> </td>
         
-            <td> <?php echo $row['credits']; ?> </td>
-            <td> <?php echo $row['grade']; ?> </td>
+            <td> <?php echo $row['credits']; $csv_output .= $row['credits'].", "; ?> </td>
+            <td> <?php echo $row['grade']; $csv_output .= $row['grade']."\n"; ?> </td>
     </tr>
 <?php 
-
 }
+
  ?>
 
 </tbody>
@@ -88,12 +94,18 @@ while(mysqli_num_rows($exec_query)>0 && $row = mysqli_fetch_assoc($exec_query)){
 </div>
 </div>
 </script>
-<form method="POST">
+<form name="export" action="export.php" method="post">
 <div class="col-md-6 text-right">
-    <button id="" name="csv_btn" class="btn btn-success" onclick=<?php if(isset($_POST['csv_btn'])){}?>>
-    Export as CSV
-    </button>
-</div>
+    <input type="submit" class="btn btn-success" value="Export table to CSV">
+    </div>
+    <input type="hidden" value="<? echo $csv_hdr; ?>" name="csv_hdr">
+    <input type="hidden" value="<? echo $csv_output; ?>" name="csv_output">
+    <input type="hidden" value="<? echo $filename; ?>" name="filename">
+</form>
+    
+       
+    
+<form method="POST">
   <div class="col-md-6 text-left">
     <button id="" name="back_btn" class="btn btn-primary" onclick=<?php if(isset($_POST['back_btn'])){redirect('course_home.php');} ?>> Back</button>
   </div>
