@@ -56,19 +56,11 @@
 <button name="generate" class="btn btn-primary" onclick="submitForm('dept_report')">Generate Report</button>
 </div>
 </div>
-<div class="col-md-2">
 </form>
-  <form name="export" action="export.php" method="post">
-  <div class="col-md-12 text-left">
-    <input type="submit" class="btn btn-success"  value="Export table to CSV">
-    </div>
-    <input type="hidden" value="<? echo $csv_hdr; ?>" name="csv_hdr">
-    <input type="hidden" value="<? echo $csv_output; ?>" name="csv_output">
-    <input type="hidden" value="<? echo $filename; ?>" name="filename">
-</form>
+  
 </div>
 </div>
-<div class="col-md-12">
+<div class="col-md-12" style="overflow-y:scroll; height:450px;">
 <br> 
 <?php 
 $dept_query = "SELECT distinct dept from phd_scholar;";
@@ -214,6 +206,14 @@ if($_SERVER['REQUEST_METHOD']=='POST' && isset($_POST['generate'])){
 </table>
  
 </div>
+<form name="export" action="export.php" method="post">
+  <div class="col-md-12 text-center">
+    <input type="submit" class="btn btn-success"  value="Export table to CSV">
+    </div>
+    <input type="hidden" value="<? echo $csv_hdr; ?>" name="csv_hdr">
+    <input type="hidden" value="<? echo $csv_output; ?>" name="csv_output">
+    <input type="hidden" value="<? echo $filename; ?>" name="filename">
+</form>
 </div>
 <script type="text/javascript">
             function submitForm(name){

@@ -1,5 +1,11 @@
 <?php
 	require("config.php");
+
+	$csv_hdr = "ID No., Name, Dept, Supervisor, Examiner1, Examiner2, DAC1, DAC2, Co-supervisor1, Co-supervisor2, Co-supervisor3";
+
+	$csv_output = "";
+
+	$filename = "viva_report_all";
 ?>
 <!DOCTYPE html>
 <html>
@@ -50,9 +56,6 @@
   <div class="col-md-3 text-right">
 <button name="generate" class="btn btn-primary" onclick="submitForm('viva_report')">Generate Report</button>
 </div>
- <div class="col-md-3 text-left">
-    <button id="" name="" class="btn btn-primary" onclick="">Export as CSV</button>
-  </div>
 </form>
 </div>
 <div class="col-md-12">
@@ -64,17 +67,19 @@ $today = date('Y-m-d');
 if($_SERVER['REQUEST_METHOD']=='POST' && isset($_POST['generate'])){
 	if(strcmp($_POST['phd_status'],'on-going')==0){
 		$status =	"phd_scholar.ID = phd_thesis.ID AND (phd_awarded_date IS NULL OR phd_awarded_date > '".$today."')";
+		$filename = "viva_report_ongoing";
 	}
 	else{
 		if(strcmp($_POST['phd_status'],'completed')==0){
 		$status = "phd_scholar.ID = phd_thesis.ID AND phd_awarded_date IS NOT NULL AND phd_awarded_date <= '".$today."'";
+		$filename = "viva_report_completed";
 		}
 	}
 }
 $base_query = "SELECT phd_scholar"."."."ID as ID, name, dept, supervisor, examiner1, examiner2, DAC1, DAC2 from phd_scholar, phd_thesis where ".$status." order by YOA, phd_scholar.ID;";
 $exec_query = mysqli_query($conn,$base_query);
 ?>
-<div class="col-md-12">
+<div class="col-md-12" style="overflow-y:scroll; height:450px;">
 <table class="table table-bordered table-striped" id="viva_report">
 	<thead>
 		<tr>
@@ -116,21 +121,21 @@ $exec_query = mysqli_query($conn,$base_query);
 	<tbody>
 	<?php while(mysqli_num_rows($exec_query)>0 && $row = mysqli_fetch_assoc($exec_query)){ ?>
 		<tr>
-			<td> <?php echo $row['ID']; ?> </td>
+			<td> <?php echo $row['ID']; $csv_output .= $row['ID'].", "; ?> </td>
 		
-			<td> <?php echo $row['name']; ?> </td>
+			<td> <?php echo $row['name']; $csv_output .= $row['name'].", "; ?> </td>
 		
-			<td> <?php echo $row['dept']; ?> </td>
+			<td> <?php echo $row['dept']; $csv_output .= $row['dept'].", "; ?> </td>
 		
-			<td> <?php echo $row['supervisor']; ?> </td>
+			<td> <?php echo $row['supervisor']; $csv_output .= $row['supervisor'].", "; ?> </td>
 		
-			<td> <?php echo $row['examiner1']; ?> </td>
+			<td> <?php echo $row['examiner1']; $csv_output .= $row['examiner1'].", "; ?> </td>
 		
-			<td> <?php echo $row['examiner2']; ?> </td>
+			<td> <?php echo $row['examiner2']; $csv_output .= $row['examiner2'].", "; ?> </td>
 		
-			<td> <?php echo $row['DAC1']; ?> </td>
+			<td> <?php echo $row['DAC1']; $csv_output .= $row['DAC1'].", "; ?> </td>
 		
-			<td> <?php echo $row['DAC2']; ?> </td>
+			<td> <?php echo $row['DAC2']; $csv_output .= $row['DAC2']."\n"; ?> </td>
 		
 		<?php $co_query = "SELECT cosupervisor from phd_cosupervisor where ID ='".$row['ID']."';";
 			$cnt = 0;
@@ -153,6 +158,14 @@ $exec_query = mysqli_query($conn,$base_query);
 
 </table>
 </div>
+<form name="export" action="export.php" method="post">
+<div class="col-md-12 text-center">
+    <input type="submit" class="btn btn-success" value="Export table to CSV">
+    </div>
+    <input type="hidden" value="<? echo $csv_hdr; ?>" name="csv_hdr">
+    <input type="hidden" value="<? echo $csv_output; ?>" name="csv_output">
+    <input type="hidden" value="<? echo $filename; ?>" name="filename">
+</form>
 </div>
 </div>
 <script type="text/javascript">
