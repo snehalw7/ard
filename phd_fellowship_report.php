@@ -1,5 +1,11 @@
 <?php
 	require("config.php");
+
+	$csv_hdr = "ID No., Name, Dept, Fellowship type, Received Amount, Financial Year, Date Received";
+
+	$csv_output = "";
+
+	$filename = "fellowship_report_all";
 ?>
 <!DOCTYPE html>
 <html>
@@ -49,9 +55,6 @@
   <div class="col-md-3 text-right">
 <button name="generate" class="btn btn-primary" onclick="submitForm('fellow_report')">Generate Report</button>
 </div>
- <div class="col-md-3 text-left">
-    <button id="" name="" class="btn btn-primary" onclick="">Export as CSV</button>
-  </div>
 </form>
 </div>
 <div class="col-md-12">
@@ -62,10 +65,12 @@ $today = date('Y-m-d');
 if($_SERVER['REQUEST_METHOD']=='POST' && isset($_POST['generate'])){
 	if(strcmp($_POST['phd_status'],'on-going')==0){
 		$status =	"AND phd_scholar.ID = phd_thesis.ID AND (phd_awarded_date IS NULL OR phd_awarded_date > '".$today."')";
+		$filename = "fellowship_report_ongoing";
 	}
 	else{
 		if(strcmp($_POST['phd_status'],'completed')==0){
 		$status = "AND phd_scholar.ID = phd_thesis.ID AND phd_awarded_date IS NOT NULL AND phd_awarded_date <= '".$today."'";
+		$filename = "fellowship_report_completed";
 		}
 	}
 }
@@ -73,7 +78,7 @@ $base_query = "SELECT phd_scholar."."ID, name, dept, phd_fellowship.type, financ
 
 $exec_query = mysqli_query($conn,$base_query);
 ?> 
-<div class="col-md-12">
+<div class="col-md-12" style="overflow-y:scroll; height:450px;">
 <table class="table table-bordered table-striped" id="fellowship_report">
 	<thead>
 		<tr>
@@ -103,19 +108,19 @@ $exec_query = mysqli_query($conn,$base_query);
 	<tbody>
 	<?php while(mysqli_num_rows($exec_query)>0 && $row = mysqli_fetch_assoc($exec_query)){ ?>
 		<tr>
-			<td> <?php echo $row['ID']; ?> </td>
+			<td> <?php echo $row['ID']; $csv_output .= $row['ID'].", "; ?> </td>
 		
-			<td> <?php echo $row['name']; ?> </td>
+			<td> <?php echo $row['name']; $csv_output .= $row['name'].", "; ?> </td>
 		
-			<td> <?php echo $row['dept']; ?> </td>
+			<td> <?php echo $row['dept']; $csv_output .= $row['dept'].", "; ?> </td>
 		
-			<td> <?php echo $row['type']; ?> </td>
+			<td> <?php echo $row['type']; $csv_output .= $row['type'].", "; ?> </td>
 		
-			<td> <?php echo $row['funds_total']; ?> </td>
+			<td> <?php echo $row['funds_total']; $csv_output .= $row['funds_total'].", "; ?> </td>
 		
-			<td> <?php echo $row['financial_year']; ?> </td>
+			<td> <?php echo $row['financial_year']; $csv_output .= $row['financial_year'].", "; ?> </td>
 		
-			<td> <?php echo $row['date_received']; ?> </td>
+			<td> <?php echo $row['date_received']; $csv_output .= $row['date_received']."\n"; ?> </td>
 		
 			
 		
@@ -126,6 +131,15 @@ $exec_query = mysqli_query($conn,$base_query);
 
 </table>
 </div>
+<form name="export" action="export.php" method="post">
+<div class="col-md-12 text-center">
+    <input type="submit" class="btn btn-success" value="Export table to CSV">
+    </div>
+    <input type="hidden" value="<? echo $csv_hdr; ?>" name="csv_hdr">
+    <input type="hidden" value="<? echo $csv_output; ?>" name="csv_output">
+    <input type="hidden" value="<? echo $filename; ?>" name="filename">
+</form>
+
 </div>
 <script type="text/javascript">
             function submitForm(name){
